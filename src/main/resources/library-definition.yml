@@ -1,0 +1,46 @@
+openapi: 3.0.0
+info:
+  description: This is a library API
+  version: 1.0.0
+  title: Library
+  license:
+    name: Apache-2.0
+    url: "https://www.apache.org/licenses/LICENSE-2.0.html"
+tags:
+  - name: books
+    description: Search for books and add new ones
+
+paths:
+  /search/{userType}:
+    get:
+      summary: Busca por usuários
+      description: Busca por usuários
+      operationId: buscarTipoUsuarioGet
+      parameters:
+        - name: userType
+          in: path
+          schema:
+            anyOf:
+              - type: string
+                enum: [ comum, admin ]
+              - type: integer
+      responses:
+        "200":
+          description: buscarTipoUsuarioGet 200 response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BaseUser"
+components:
+  schemas:
+    BaseUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        email:
+          type: string
