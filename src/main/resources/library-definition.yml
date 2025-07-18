@@ -1,46 +1,77 @@
-openapi: 3.0.0
+openapi: 3.0.1
 info:
-  description: This is a library API
-  version: 1.0.0
-  title: Library
-  license:
-    name: Apache-2.0
-    url: "https://www.apache.org/licenses/LICENSE-2.0.html"
-tags:
-  - name: books
-    description: Search for books and add new ones
+  title: "Simplified API"
+  description: "A simplified example - oneOf and anyOf."
+  version: "1.0.0"
 
 paths:
-  /search/{userType}:
-    get:
-      summary: Busca por usuários
-      description: Busca por usuários
-      operationId: buscarTipoUsuarioGet
-      parameters:
-        - name: userType
-          in: path
-          schema:
-            anyOf:
-              - type: string
-                enum: [ comum, admin ]
-              - type: integer
+  /deposit:
+    post:
+      summary: "Create Deposit"
+      description: "Creates a new deposit."
+      operationId: "createDeposit"
+      requestBody:
+        description: "Information for the new deposit."
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServerDTO'
       responses:
-        "200":
-          description: buscarTipoUsuarioGet 200 response
+        '204':
+          description: "Deposit successfully created."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/BaseUser"
+                $ref: '#/components/schemas/StatusResponse'
+
 components:
   schemas:
-    BaseUser:
+    StatusResponse:
+      anyOf:
+        - $ref: '#/components/schemas/ServerOne'
+        - $ref: '#/components/schemas/ServerTwo'
+
+    ActiveServer:
       type: object
       properties:
         id:
           type: integer
-        nome:
+          description: "Unique identifier for the server."
+        status:
           type: string
-        email:
+          enum: [ "ACTIVE" ]
+        uptime:
           type: string
+          format: duration
+          description: "How long the server has been active (e.g., 'P3DT5H')."
+
+    InactiveServer:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: "Unique identifier for the server."
+        status:
+          type: string
+          enum: [ "INACTIVE" ]
+        reason:
+          type: string
+          description: "Reason for the server being inactive."
+
+    ServerOne:
+      type: object
+      properties:
+        message:
+          type: string
+
+    ServerTwo:
+      type: object
+      properties:
+        details:
+          type: string
+
+    ServerDTO:
+      oneOf:
+        - $ref: '#/components/schemas/ActiveServer'
+        - $ref: '#/components/schemas/InactiveServer'
