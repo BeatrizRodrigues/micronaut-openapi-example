@@ -40,7 +40,6 @@ components:
           description: "Unique identifier for the server."
         status:
           type: string
-          enum: [ "ACTIVE" ]
         uptime:
           type: string
           format: duration
@@ -54,7 +53,6 @@ components:
           description: "Unique identifier for the server."
         status:
           type: string
-          enum: [ "INACTIVE" ]
         reason:
           type: string
           description: "Reason for the server being inactive."
@@ -75,3 +73,8 @@ components:
       oneOf:
         - $ref: '#/components/schemas/ActiveServer'
         - $ref: '#/components/schemas/InactiveServer'
+          discriminator:
+            propertyName: status
+            mapping:
+              ACTIVE: '#/components/schemas/ActiveServer'
+              INACTIVE: '#/components/schemas/InactiveServer'
